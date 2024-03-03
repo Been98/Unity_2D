@@ -53,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // 대쉬를 실행하는 코루틴 함수
     private IEnumerator Dash()
     {
         //대쉬할 때 무시하는 방법은 ignoreLayercollision 사용 https://www.youtube.com/watch?v=721TkkJ-CNM
@@ -62,24 +63,25 @@ public class PlayerMovement : MonoBehaviour
         p_Rigid.gravityScale = 0f;
         p_Rigid.velocity = new Vector2(-transform.localScale.x * dashingPower, 0f);
         p_Trail.emitting = true;
-        yield return new WaitForSeconds(dashingTime);
+        yield return new WaitForSeconds(dashingTime); // 대쉬 지속 시간만큼 대기
         p_Trail.emitting = false;
         p_Rigid.gravityScale = origin;
         isDashing = false;
         p_Rigid.velocity = Vector2.zero;
         p_Trail.Clear();
-        yield return new WaitForSeconds(dashingCooldown);
+        yield return new WaitForSeconds(dashingCooldown); // 대쉬 쿨다운 시간만큼 대기
         canDash = true;
     }
 
     //달리는 함수
     void Run()
     {
+        // 대쉬 중이면 함수 종료
         if (isDashing) return;
-        Vector2 p_Velocity = new Vector2(moveInput.x * runSpeed, p_Rigid.velocity.y);
+        Vector2 p_Velocity = new Vector2(moveInput.x * runSpeed, p_Rigid.velocity.y); // 이동 속도 계산
         p_Rigid.velocity = p_Velocity;
 
-        bool playerHasHorizontalSpeed = Mathf.Abs(p_Rigid.velocity.x) > Mathf.Epsilon;
+        bool playerHasHorizontalSpeed = Mathf.Abs(p_Rigid.velocity.x) > Mathf.Epsilon; // 수평 속도가 0이 아닌지 확인
         p_Animator.SetFloat("RunState", Convert.ToInt32(playerHasHorizontalSpeed));
     }
 
