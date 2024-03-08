@@ -22,6 +22,7 @@ public class BossMovement : MonoBehaviour
     {
         e_Animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        e_Animator.SetFloat("RunState", 0.5f);
     }
 
     private void FixedUpdate()
@@ -52,7 +53,7 @@ public class BossMovement : MonoBehaviour
         // 이동 속도 설정
         Vector2 targetVelocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
         rb.velocity = targetVelocity;
-        e_Animator.SetFloat("RunState",0.5f);
+        //e_Animator.SetFloat("RunState",0.5f);
     }
 
     private void Flip()

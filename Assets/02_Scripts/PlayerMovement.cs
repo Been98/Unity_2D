@@ -20,11 +20,16 @@ public class PlayerMovement : MonoBehaviour
     private TrailRenderer p_Trail;
     private Animator p_Animator;
 
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] int maxJumpCount = 2;
+    private int currentJumpCount = 0;
+    private int groundLayerToInt;
     private void Awake()
     {
         p_Rigid = GetComponent<Rigidbody2D>();
         p_Trail = GetComponent<TrailRenderer>();
         p_Animator = GetComponent<Animator>();
+        groundLayerToInt = LayerMask.NameToLayer("Ground");
     }
 
     private void FixedUpdate()
@@ -40,9 +45,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnJump(InputValue value)
     {
-        if (value.isPressed && !isDashing) //레이어 추가해서 땅일 때 점프 1번 가능하게
+        if (value.isPressed && !isDashing && currentJumpCount < maxJumpCount) //레이어 추가해서 땅일 때 점프 1번 가능하게
         {
             p_Rigid.velocity = new Vector2(0f, jumpSpeed);
+            currentJumpCount++;
         }
     }
     private void OnDash(InputValue value)
@@ -94,5 +100,10 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.localScale = new Vector2(-Mathf.Sign(p_Rigid.velocity.x), 1f); //-를 넣어 캐릭 방향에 맞게 설정
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.layer == groundLayerToInt) { currentJumpCount = 0; }
     }
 }
